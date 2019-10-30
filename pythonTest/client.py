@@ -5,8 +5,12 @@ import struct
 import time
 import pickle
 import zlib
+# from gpiozero import LED
 
-
+# ledgreen=LED(19)
+# ledred=LED(26)
+isKnown=False
+boolProcess=False
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
 	client_socket.connect(('localhost', 8485))
 	connection = client_socket.makefile('wb')
@@ -22,9 +26,23 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
 	    client_socket.sendall(struct.pack(">L", size) + send_data)
 	    client_data = client_socket.recv(1024)
 	    client_data.decode()
-	    if(client_data!="unknown"):
+	    client_data=str(client_data)
+	    if(client_data!="b'unknown'"):
 	    	isKnown=True
 	    	start=time.time()
-	    	
+	    
+	    if(isKnown==True):
+	    	boolProcess=True
+	    	if(time.time()-start<10):
+	    		# ledred.off()
+	    		# ledgreen.on()
+	    		print("ledon")
+	    	if(time.time()-start>10):
+	    		start=0
+	    		# ledred.on()
+	    		print("ledoff")
+	    		boolProcess=False
+	    		isKnown=False
+
 	    print(client_data)
 	cam.release()

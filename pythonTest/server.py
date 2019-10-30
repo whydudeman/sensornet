@@ -60,9 +60,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             frame=pickle.loads(frame_data, fix_imports=True, encoding="bytes")
             frame = cv2.imdecode(frame, cv2.IMREAD_COLOR)
             predictions=predict(frame,knn_clf=None,model_path="dataset/trained_knn_model.clf",distance_threshold=0.389)
-            
+            print(predictions)
+            if not predictions:
+                identificator="unknown"
+                print("There is no face")
             for name, (top, right, bottom, left) in predictions:
                 identificator=name
+                print("Nameis"+name)
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255),2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
                 font = cv2.FONT_HERSHEY_DUPLEX
